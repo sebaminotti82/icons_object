@@ -37,64 +37,97 @@ $(document).ready(function(){
        
     ];
     console.log(icons);
+    
     //PASSO 2 GENERO UN ARRAY CHE CONTERRA' I NOSTRI COLORI DA ABBINARE ALLE ICONE!!
-    const container =$('#container')
-   
-    const colors = ['gold','lime','orange','purple'];
+    
+       const select = $('#type')
+       const container =$('#container')
+    
+        const colors = ['#4d4d4d','red','orange','purple'];
+      
+        let iconsColored = icons.map((element) =>{
+          
+
+            const {type,icon,nome}=element
+
+            return{type,icon,nome,color:''}
+        })
+        console.log(iconsColored);
 
 
-       
-    let iconsColored = icons.map((element) =>{
+        let typeIcons = []
+        console.log(typeIcons);
+        iconsColored.forEach((element)=>{
 
-        const {type,icon,nome}=element
+            if(!typeIcons.includes(element.type)){
+                typeIcons.push(element.type)
+            }
+        })
+        
+      console.log(typeIcons);
 
-        return{type,icon,nome,color:''}
-    })
-    console.log(iconsColored);
+      for(let i = 0; i < iconsColored.length; i++){
+
+        let icona = iconsColored[i]
+
+        let indexType = typeIcons.indexOf(icona.type)
+        console.log(indexType);
+        icona.color=colors[indexType]
+      }
+      console.log(iconsColored);
 
 
-    let typeIcons = []
+    print(iconsColored,container)
 
-    iconsColored.forEach((element)=>{
+    typeIcons.forEach(element => {
+      
+          select.append(`
+          <option value="${element}">${element}</option>
+          `)
+    });
 
-        if(!typeIcons.includes(element.type)){
-            typeIcons.push(element.type)
+
+      console.log(select);
+
+      
+    select.change({container},function(event){
+      console.log(event);
+      const container = event.data.container
+      const optionSelected = $(this).val()
+
+      console.log(optionSelected);
+
+      const filtered = iconsColored.filter((element)=>{
+
+          return  element.type === optionSelected
+      })
+      
+        if(filtered.length > 0){
+          print(filtered,container)
+        } else {
+          print(iconsColored,container)
         }
+        
+        
     })
-     
-   console.log(typeIcons);
-
-   for(let i = 0; i < iconsColored.length; i++){
-
-    let icona = iconsColored[i]
-
-    let indexType = typeIcons.indexOf(icona.type)
-    icona.color=colors[indexType]
-   }
-   console.log(iconsColored);
-
-
-
-
-iconsColored.forEach(element => {
-     
-      container.append(`
-         <div class="box">
-            
-             <i style="color:${element.color}" class="${element.icon}"></i>
-           <div class="nome">
-             <h4>${element.nome}</h4>
-           </div>
-         </div>
-      `)
-});
-
-
-
-
-
-
 
 
 
 })
+
+
+function print (array, container){
+   container.html('')
+  array.forEach(element => {
+   
+    container.append(`
+       <div class="box">
+          
+           <i style="color:${element.color}" class="${element.icon}"></i>
+         <div class="nome">
+           <h4>${element.nome}</h4>
+         </div>
+       </div>
+    `)
+});
+}
